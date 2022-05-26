@@ -1,18 +1,24 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "../index.css";
+import marsImg from "../assets/mars.jpg";
+import astronaut from "../assets/astronaut.png";
 
 import ImgTextGrid from "../components/ImgTextGrid";
 import Card from "../components/Card";
+import Accordion from "../components/Accordion";
 
 const Home = () => {
   const [apod, setApod] = useState("");
-  const [rover, setRover] = useState([]);
-
-  console.log(rover);
+  const [launchData, setLaunchData] = useState([]);
+  const [asteroidData, setAsteroidData] = useState([]);
 
   //Making use of useEffect hook to fetch APOD img
+
+  ////////CAN YOU PUT MULTIPLE API CALLS INSIDE A USEeFFECT
   useEffect(() => {
-    const imgOfTheDay = fetch("https://api.nasa.gov/planetary/apod?api_key=");
+    const imgOfTheDay = fetch(
+      "https://api.nasa.gov/planetary/apod?api_key="
+    );
     imgOfTheDay
       .then((Response) => Response.json())
       .then((data) => {
@@ -20,67 +26,136 @@ const Home = () => {
       });
   }, []);
 
-  //Making use of useEffect hook to fetch mars rover imgs
-  useEffect(() => {
-    const roverPhotos = fetch(
-      "https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?sol=1000&api_key="
-    );
+  //Making use of the useEffect hook to fetch spaceX launch history
 
-    roverPhotos
+  useEffect(() => {
+    const spaceXLaunches = fetch("https://api.spacexdata.com/v3/launches");
+
+    spaceXLaunches
       .then((Response) => Response.json())
 
       .then((data) => {
-        const roverPhotos = data.photos;
-        setRover(roverPhotos.slice(1, 4));
+        setLaunchData(data.slice(5, 12));
       });
   }, []);
 
+  // Making use of useEffect hook to fetch DONKI data from nasa
+
+  useEffect(() => {
+    const asteroidData = fetch(
+      "https://api.nasa.gov/planetary/apod?api_key="
+    );
+
+    asteroidData
+      .then((Response) => Response.json())
+      .then((data) => {
+        setAsteroidData(data.near_earth_objects);
+      });
+  });
+
   return (
     //HERO
-    <div className="bg-black">
+    <div className="bg-white relative">
       <div className="home text-white flex flex-col justify-center text-left ">
-        <div className="home__content__container pl-24 w-4/5">
-          <h3 className="text-5xl uppercase font-bold leading-tight">
-            One small Step for man,
-            <br />
-            one giant leap for man kind
+        <div className="home__content__container pl-28 w-4/5 pt-32">
+          <h3 className="text-7xl font-bold leading-tight">
+            To Infinity and <span className="text-blue">Beyond</span>
           </h3>
-          <p className="text-2xl py-5">
-            Lorem ipsum dolor sit amet consectetur adipisicing.
+          <p className="text-2xl py-5 max-w-lg">
+            A collection of images, video and data fetch()ed from the <span className="text-blue">Nasa</span> and
+            <span className="text-blue"> SpaceX API's</span>
           </p>
-          <button className="text-base my-5">Go to space</button>
+          <button className="text-base my-5 bg-gradient-to-r from-purple to-blue rounded-full hover:from-blue hover:to-purple">
+            Go to space
+          </button>
+        </div>
+        <div className="astronaut__container absolute">
+          <img  src={astronaut} className="astronaut" alt="" />
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+            <path
+              fill="#00000"
+              fill-opacity="1"
+              d="M0,288L60,282.7C120,277,240,267,360,245.3C480,224,600,192,720,192C840,192,960,224,1080,245.3C1200,267,1320,277,1380,282.7L1440,288L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z"
+            ></path>
+          </svg>
+         
         </div>
       </div>
 
-      <div className="image__of__day bg-black text-white">
-        <h4 className="text-center text-blue text-4xl font-bold uppercase pt-12">
-          Astronomy picture of the day
-        </h4>
-        <ImgTextGrid
-          gridImg={apod.hdurl}
-          gridHeader={apod.title}
-          gridImgInfo={apod.explanation}
-        />
+      <div className="image__of__day bg-black text-white py-28">
+        <div>
+          <ImgTextGrid
+            gridImg={apod.hdurl}
+            gridHeader={apod.title}
+            gridImgInfo={apod.explanation}
+          />
+        </div>
+      </div>
+      <div>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+          <path
+            fill="#00000"
+            fill-opacity="1"
+            d="M0,128L60,106.7C120,85,240,43,360,53.3C480,64,600,128,720,170.7C840,213,960,235,1080,250.7C1200,267,1320,277,1380,282.7L1440,288L1440,0L1380,0C1320,0,1200,0,1080,0C960,0,840,0,720,0C600,0,480,0,360,0C240,0,120,0,60,0L0,0Z"
+          ></path>
+        </svg>
       </div>
 
-      <div className="container bg-black text-white mx-auto py-12">
-        <h4 className="text-center text-blue text-4xl font-bold uppercase py-12">
-          Photos from the mars rover
-        </h4>
-        <div className="grid grid-cols-3 gap-6 place-content-center">
-          {rover.map((rvr) => {
+      <div className="container mx-auto grid grid-cols-12 gap-6 py-22 px-8 bg-white">
+        <div className="col-span-7 px-10">
+          <Accordion data={launchData} />
+        </div>
+        <div className="col-span-5 pt-6 px-10">
+          <h5 className="py-3 uppercase font-semibold text-md text-black">
+            <span className="text-green">02 / </span> SpaceX flight data
+          </h5>
+          <h3 className="text-4xl tracking-widest font-bold text-black">
+            Notes from several spaceX launches
+          </h3>
+          <p className="pt-6">
+            SpaceX is an American space manufacturer, a provider of space
+            transportation services, and a communications corporation
+            headquartered in Hawthorne, California. SpaceX was founded in 2002
+            by Elon Musk with the goal of reducing space transportation costs to
+            enable the colonization of Mars
+          </p>
+        </div>
+      </div>
+
+      <div>
+        
+     <table class="table">
+     <thead>
+         <tr>
+           <th>Name</th>
+           <th>Estimated diameter</th>
+           <th></th>
+         </tr>
+       </thead>
+       {/* {asteroidData.map((data) => {
+         console.log(data)
             return (
-              <div className="grid-span-1 ">
-                <Card
-                  roverImg={rvr.img_src}
-                  roverName={`Rover name: ${rvr.rover.name}`}
-                  roverLandingDate={`Landing date: ${rvr.rover.landing_date}`}
-                  roverStatus={`Rover Status: ${rvr.rover.status}`}
-                />
-              </div>
+              <>
+       <tbody>
+         <tr>
+           <td scope="row">{data.name_limited}</td>
+           <td>{data.estimated_diameter.kilometers.estimated_diameter_min}</td>
+           <td></td>
+         </tr>
+         <tr>
+           <td scope="row"></td>
+           <td></td>
+           <td></td>
+         </tr>
+       </tbody>
+              </>
             );
-          })}
-        </div>
+          })} */}
+     </table>
+          
+      
       </div>
     </div>
   );

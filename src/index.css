@@ -7,9 +7,26 @@
     background-image:  linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) 100%),url("/src/assets/hero.jpg");
     background-size: cover;
 }
+.navbar{
+    background-image:  linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) 100%),url("/src/assets/hero.jpg");
+    background-size: cover;
+}
 
 button{
     height: 3.5rem;
     width: 10rem;
-    border:2px solid white;
+    
+}
+
+.astronaut__container{
+    height:300px;
+    position: absolute;
+    right:200px;
+    top:100px;
+}
+.astronaut{
+    height:100%;
+    -webkit-transform: scaleX(-1);
+    transform: scaleX(-1);
+    
 }
