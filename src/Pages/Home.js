@@ -6,6 +6,7 @@ import astronaut from "../assets/astronaut.png";
 import ImgTextGrid from "../components/ImgTextGrid";
 import Card from "../components/Card";
 import Accordion from "../components/Accordion";
+import Table from "../components/Table";
 
 const Home = () => {
   const [apod, setApod] = useState("");
@@ -17,7 +18,7 @@ const Home = () => {
   ////////CAN YOU PUT MULTIPLE API CALLS INSIDE A USEeFFECT
   useEffect(() => {
     const imgOfTheDay = fetch(
-      "https://api.nasa.gov/planetary/apod?api_key="
+      "https://api.nasa.gov/planetary/apod?api_key=UcBjXa4Tv5NEWdEYSBc31FNsoDMqjdy1CNPfMmYx"
     );
     imgOfTheDay
       .then((Response) => Response.json())
@@ -43,15 +44,14 @@ const Home = () => {
 
   useEffect(() => {
     const asteroidData = fetch(
-      "https://api.nasa.gov/planetary/apod?api_key="
+      "https://api.nasa.gov/neo/rest/v1/feed?start_date=2015-09-07&end_date=2015-09-08&api_key=UcBjXa4Tv5NEWdEYSBc31FNsoDMqjdy1CNPfMmYx"
     );
 
-    asteroidData
-      .then((Response) => Response.json())
-      .then((data) => {
-        setAsteroidData(data.near_earth_objects);
-      });
-  });
+    asteroidData.then((response) => response.json()).then((data) => {
+      let info = data.near_earth_objects
+      setAsteroidData( info[Object.keys(info)[0].slice(0,100)])
+    })
+  }, []);
 
   return (
     //HERO
@@ -103,7 +103,7 @@ const Home = () => {
         </svg>
       </div>
 
-      <div className="container mx-auto grid grid-cols-12 gap-6 py-22 px-8 bg-white">
+      <div className="container mx-auto grid grid-cols-12 gap-6 py-24 px-8 bg-white">
         <div className="col-span-7 px-10">
           <Accordion data={launchData} />
         </div>
@@ -124,39 +124,11 @@ const Home = () => {
         </div>
       </div>
 
-      <div>
-        
-     <table class="table">
-     <thead>
-         <tr>
-           <th>Name</th>
-           <th>Estimated diameter</th>
-           <th></th>
-         </tr>
-       </thead>
-       {/* {asteroidData.map((data) => {
-         console.log(data)
-            return (
-              <>
-       <tbody>
-         <tr>
-           <td scope="row">{data.name_limited}</td>
-           <td>{data.estimated_diameter.kilometers.estimated_diameter_min}</td>
-           <td></td>
-         </tr>
-         <tr>
-           <td scope="row"></td>
-           <td></td>
-           <td></td>
-         </tr>
-       </tbody>
-              </>
-            );
-          })} */}
-     </table>
-          
-      
+     <div className="container mx-auto my-28 py-12 bg-black text-white rounded-md">
+         
+          <Table asteroidData={asteroidData}/>
       </div>
+      
     </div>
   );
 };
